@@ -6,13 +6,19 @@ import scala.xml.Node
 
 object ReactGenerator {
 
-  def generateInputForm[T]: Node = {
-    ""
+  def generateInputForm[T: TypeTag]: Node = {
+    <form>{ describe[T].map { case (fieldName, fieldType) =>
+      generateInputField(fieldName, fieldType)
+    }}</form>
   }
 
-  def generateDisplay[T]: Node = {
-    ""
-  }
+//  def generateDisplay[T]: Node = {
+//    ""
+//  }
+
+//  def describe[T: TypeTag]: List[(_root_.scala.reflect.runtime.universe.TermName, _root_.scala.reflect.runtime.universe.Type)] = typeOf[T].members.collect {
+//    case m: MethodSymbol if m.isCaseAccessor => m
+//  }.toList.map(member => (member.name, member.typeSignature.resultType)).reverse
 
   def describe[T: TypeTag] = typeOf[T].members.collect {
     case m: MethodSymbol if m.isCaseAccessor => m
@@ -35,8 +41,8 @@ object ReactGenerator {
       - Range => range
     */
 
-    typeSignature match {
-      case String => "text"
+    typeSignature.toString match {
+      case "String" => "text"
       case _ => "lost"
     }
   }
